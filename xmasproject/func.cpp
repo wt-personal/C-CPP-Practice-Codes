@@ -33,7 +33,7 @@ float input_price(int row){
                 dot_exists = false;
                 counter = 0;
                 attron(A_REVERSE);
-                mvprintw(ERROR_MESSAGE_ROW , 0 , " - There is no free lunch! Price cannot be zero.");
+                mvprintw(ERROR_MESSAGE_ROW , 0 , " - There is no free lunch! Price cannot be zero. ");
                 attroff(A_REVERSE);
                 mvprintw(printrow, 0, "Give the price of the gift: ");
                 
@@ -57,7 +57,7 @@ float input_price(int row){
             continue;
         }
 
-        if (counter < 40) {
+        if (counter < STRING_LENGTH) {
             if ((ch >= '0' && ch <= '9') || ch == 'e' || (ch == '.' && !dot_exists)) {
                 if (ch == '.') dot_exists = true;
                 buffer[counter++] = ch;
@@ -67,11 +67,6 @@ float input_price(int row){
     }
 
     float price = std::strtof(buffer, nullptr);
-
-    // for(int i = 0; i < MAX_CHARACTERS; i++) {
-    //     if (i == MAX_CHARACTERS-1) mvprintw(printrow, 0, "Rounded price was: %.2fe", price);
-    //     else mvprintw(printrow, i, " ");
-    // }
 
     mvhline(printrow, 0, ' ', MAX_CHARACTERS);
     mvprintw(printrow, 0, "Rounded price was: %.2fe", price);
@@ -107,7 +102,7 @@ std::string text_input_loop(int row){
         int ch;
         int counter = 0;
 
-    //- Loop for input text
+        //- Loop for input text
         while (true) {
 
             curs_set(1); // show cursor
@@ -138,7 +133,16 @@ std::string text_input_loop(int row){
             }
 
             // Add character
-            if (counter < 40) {
+
+            if ((counter < STRING_LENGTH) && (row != GIFTRECEIVER)) {
+                if ((ch >= 'A') && (ch <= 'Z') || (ch >= 'a') && (ch <= 'z') || (ch == ' ') ||
+                    ((ch >= '!') && (ch <= '@'))) { // Special characters from ! to number 9
+                    
+                    buffer[counter++] = ch;
+                    addch(ch);
+                }
+            }
+            else if (counter < 40){
                 if ((ch >= 'A') && (ch <= 'Z') || (ch >= 'a') && (ch <= 'z') || (ch == ' ')){
 
                     buffer[counter++] = ch;

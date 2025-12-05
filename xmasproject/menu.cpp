@@ -9,10 +9,38 @@
 #include "header.h"
 #include <iostream>
 #include <ncurses.h>
+
+#include <sstream>
+
 #include <fstream>
 
 class listingGift {
     public:
+        int add_to_list(std::string list[]) {
+            for (int i = 0; i < LIST_ITEMS; i++) {
+                if (list[i].empty()) {
+
+                    std::stringstream ss;
+                    ss << "Type: " << giftType
+                    << ", made by: " << manufacturer
+                    << ", receiver: " << receiver
+                    << ", price: " << *price;
+
+                    list[i] = ss.str();
+
+                    mvprintw(GIFTPRICE + 4, 0, "string was: %s %d", list[i].c_str(),i);
+                    return i;
+                }
+            }
+
+            attron(A_REVERSE);
+            mvprintw(ERROR_MESSAGE_ROW, 0, " - ERROR: Empty list entry not found! ");
+            attroff(A_REVERSE);
+            return -1;
+        }
+
+
+
         void addGift() {
 
             char placehold[100];
@@ -33,25 +61,40 @@ class listingGift {
                     break;
                 }
             }
+
             mvhline(ERROR_MESSAGE_ROW, 0, ' ', MAX_CHARACTERS); // Clear error messages
-        
-            mvprintw(GIFTPRICE + 3, 0, "Press any key to continue...");
+
+            giftcounter = add_to_list(&list[giftcounter]);
+
+            if (giftcounter == -1) mvprintw(GIFTPRICE + 3, 0, "-- Failed to add new gift to the list -- Press any key to continue...");
+
+
+            else {
+                mvprintw(GIFTPRICE + 3, 0, "-- Added new gift to list! -- Press any key to continue...");
+                mvprintw(GIFTPRICE + 4, 0, "string was",list[giftcounter].c_str());
+            }
 
             getch();
         }
+
+
 
     private:
         std::string giftType = "";
         std::string manufacturer = "";
         std::string receiver = "";
         float price[MAX_GIFTS] = {0};
+
+
+        int giftcounter = 0;
+        std::string list[LIST_ITEMS] = { "" };
 };
 
 int main(void) {
 
+    // create object
     listingGift Gifts;
-
-    std::string lista[100];
+    
 
     // menu valikon tekstit
     const char *options[] = {
@@ -131,6 +174,3 @@ int main(void) {
     return 0;
 }
 
-void add_to_list(std::string lista[]){
-
-}

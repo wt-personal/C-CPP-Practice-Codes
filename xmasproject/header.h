@@ -7,7 +7,11 @@
 
 #define MAX_CHARACTERS 80
 
-#define ERROR_MESSAGE_ROW 25
+#define ERROR_MESSAGE_ROW 0
+
+#define LIST_ITEMS 100
+
+#define STRING_LENGTH 40
 
 #define TITLE \
 "    /$$   /$$ /$$$$$$/$$$$   /$$$$$$   /$$$$$$$  \n" \
