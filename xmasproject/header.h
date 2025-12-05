@@ -11,7 +11,7 @@
 
 #define LIST_ITEMS 100
 
-#define STRING_LENGTH 40
+#define STRING_LENGTH 20
 
 #define TITLE \
 "    /$$   /$$ /$$$$$$/$$$$   /$$$$$$   /$$$$$$$  \n" \

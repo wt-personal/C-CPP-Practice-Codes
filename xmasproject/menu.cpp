@@ -11,6 +11,7 @@
 #include <ncurses.h>
 
 #include <sstream>
+#include <iomanip>
 
 #include <fstream>
 
@@ -19,16 +20,15 @@ class listingGift {
         int add_to_list(std::string list[]) {
             for (int i = 0; i < LIST_ITEMS; i++) {
                 if (list[i].empty()) {
-
-                    std::stringstream ss;
-                    ss << "Type: " << giftType
-                    << ", made by: " << manufacturer
-                    << ", receiver: " << receiver
-                    << ", price: " << *price;
+                    std::stringstream ss; // Gather string info in a single string stream
+                    ss << std::fixed << std::setprecision(2);
+                    ss << "| Gift type: " << giftType                   
+                    << " | made by: " << manufacturer
+                    << " | receiver: " << receiver
+                    << " | price: " << price[giftcounter] << " |";
 
                     list[i] = ss.str();
 
-                    mvprintw(GIFTPRICE + 4, 0, "string was: %s %d", list[i].c_str(),i);
                     return i;
                 }
             }
@@ -38,8 +38,6 @@ class listingGift {
             attroff(A_REVERSE);
             return -1;
         }
-
-
 
         void addGift() {
 
@@ -64,27 +62,39 @@ class listingGift {
 
             mvhline(ERROR_MESSAGE_ROW, 0, ' ', MAX_CHARACTERS); // Clear error messages
 
-            giftcounter = add_to_list(&list[giftcounter]);
+            giftcounter = add_to_list(list);
 
             if (giftcounter == -1) mvprintw(GIFTPRICE + 3, 0, "-- Failed to add new gift to the list -- Press any key to continue...");
 
-
             else {
-                mvprintw(GIFTPRICE + 3, 0, "-- Added new gift to list! -- Press any key to continue...");
-                mvprintw(GIFTPRICE + 4, 0, "string was",list[giftcounter].c_str());
+                attron(A_REVERSE);
+                mvprintw(GIFTPRICE + 2, 2, list[giftcounter].c_str());
+                attroff(A_REVERSE);
+                giftcounter++; 
+                mvprintw(GIFTPRICE + 4, 0, " ~ Added new gift to list: #%d ! Press any key to continue",giftcounter);
+                curs_set(1);
             }
-
             getch();
+            curs_set(0);
         }
 
+        float sum_of_prizes(){
+            float sum = 0;
+            for(int i = 0; i < giftcounter; i++){
+                sum += price[i];
+            }
+            return sum;
+        }
 
+        int amount_of_gifts(){
+            return giftcounter;
+        }
 
     private:
         std::string giftType = "";
         std::string manufacturer = "";
         std::string receiver = "";
         float price[MAX_GIFTS] = {0};
-
 
         int giftcounter = 0;
         std::string list[LIST_ITEMS] = { "" };
@@ -95,7 +105,6 @@ int main(void) {
     // create object
     listingGift Gifts;
     
-
     // menu valikon tekstit
     const char *options[] = {
     "Add new gift",
@@ -124,7 +133,7 @@ int main(void) {
     while (quit) {
         clear();
         attron(COLOR_PAIR(2));
-        mvprintw(1, 0, TITLE);
+        mvprintw(0, 0, TITLE); // banner
         
         attroff(COLOR_PAIR(2));
         mvprintw(7, 0, "      --- Gift Calculator - by e2403299 ---      \n");
@@ -138,7 +147,13 @@ int main(void) {
                 mvprintw(10 + i, 4, "%s", options[i]);
             }
         }
-        refresh();
+
+        
+        attron(COLOR_PAIR(2));
+        mvprintw(15, 30, "Amount of gifts: #%d",Gifts.amount_of_gifts());
+        mvprintw(16, 30, "Total:%13.2f",Gifts.sum_of_prizes());
+        attroff(COLOR_PAIR(2));
+        
 
         ch = getch();
         if (ch == KEY_UP) {
@@ -168,6 +183,7 @@ int main(void) {
         } else if (ch == 'Q') { 
             quit = 0; // quit the program with shift Q
         }
+        refresh();
     }
 
     endwin();
