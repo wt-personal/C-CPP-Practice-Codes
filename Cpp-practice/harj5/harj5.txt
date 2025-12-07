@@ -1,0 +1,25 @@
+#include <iostream>
+
+using namespace std;
+
+void plusyks(int *ptr){
+    *ptr = *ptr+1;
+}
+
+int main()
+{
+    int a;
+    
+    int *ptr = &a;
+    
+    cout << "anna luku: " << endl;
+    
+    cin >> a;
+    
+    plusyks(ptr);
+    
+    cout << "Luku plus yks on: " << endl;
+    cout << *ptr;
+    
+    return 0;
+}

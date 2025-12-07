@@ -1,0 +1,68 @@
+#include <stdio.h>
+
+int main() {
+
+	FILE *filePointer;
+
+	char ch; // A buffer to store read data
+	
+	// merkit sanat rivit lasketaan
+
+	int char_count = 0;
+	int word_count = 0;
+	int line_count = 0;
+
+    char currentchar = 0;
+    // 
+    
+	filePointer = fopen("text.txt", "r");
+
+	if (filePointer == NULL) {
+
+		printf("File open error!\n");
+
+		return 1;
+	}
+
+// Read data from the file: merkit lukumr
+
+
+
+    // Printing what is written in file
+    // character by character using loop.
+    while ((ch = fgetc(filePointer)) != EOF) {
+        
+        char_count++; 
+         
+        // check character and count words
+            if (ch >= 'A' && ch <= 'Z') currentchar = 1;
+            
+            else if (ch >= 'a' && ch <= 'z') currentchar = 1;
+    
+            else if (ch >= '0' && ch <='9' ) currentchar = 1;
+    
+        
+        else if (currentchar == 1) {
+            word_count++;
+            currentchar = 0;
+        }
+    
+        // line count
+        if (ch == '\n'){
+           
+            line_count++;
+        }
+            
+        
+            
+    }
+
+    printf("Character count: %d\n",char_count);
+    printf("Word count: %d\n",word_count);
+    printf("Line count: %d\n",line_count);
+
+	fclose(filePointer);
+
+	return 0;
+
+}

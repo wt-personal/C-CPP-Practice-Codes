@@ -127,7 +127,8 @@ class listingGift {
 
         void delete_gift() {
             if (giftcounter == 0){
-                mvprintw(2,4,"No gifts in the list.\n\n    Make new ones in the Add new gift -mode.");
+                mvhline(2,0,' ',90);
+                mvprintw(2,2,"No gifts in the list.\n\n    Make new ones in the Add new gift -mode.");
                 getch();
                 return;
             }
@@ -325,7 +326,9 @@ int main(void) {
                 Gifts.addGift();
             }
             else if (highlight == SHOW) {
-                mvprintw(0, 0, "Mode: %s Gifts: #%d Total: %.2fe - Press any key to continue.", options[highlight],Gifts.amount_of_gifts(),Gifts.sum_of_prizes());
+
+                mvprintw(0, 0, "Mode: %s Gifts: #%d Total: %.2fe - Press any key to continue.", 
+                options[highlight],Gifts.amount_of_gifts(),Gifts.sum_of_prizes());
                 Gifts.show_list();
             }
             else if (highlight == DELETE) {
