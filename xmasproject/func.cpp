@@ -1,8 +1,9 @@
 #include "header.h"
 #include <iostream>
 #include <ncurses.h>
-#include <fstream>
+// #include <fstream>
 
+// Collect input into a float value
 float input_price(int row){
     int printrow;
 
@@ -12,17 +13,19 @@ float input_price(int row){
             mvprintw(printrow, 0, "The price of the gift: ");
             break;
         default:
-            return 0;
+            return -1;
     }
 
     char buffer[256] = {0};
     int ch;
     int counter = 0;
     bool dot_exists = false;
+    curs_set(1);
 
     while (true) {
-        curs_set(1);
         ch = getch();
+
+        if (ch == 27) { curs_set(0); return -1; }
 
         if (ch == '\n'){
             if (!std::strtof(buffer, nullptr)){
@@ -33,11 +36,10 @@ float input_price(int row){
                 dot_exists = false;
                 counter = 0;
                 attron(A_REVERSE);
-                mvprintw(ERROR_MESSAGE_ROW , 0 , " - There is no free lunch! Price cannot be zero. ");
+                mvprintw(ERROR_MESSAGE_ROW , 0 , " - There is no free lunch! Price cannot be zero. (ESC to abort)");
                 attroff(A_REVERSE);
                 mvprintw(printrow, 0, "Give the price of the gift: ");
-                
-                
+
             }
             else {
                 curs_set(0);
@@ -66,32 +68,38 @@ float input_price(int row){
         }
     }
 
+    counter = 0;
+
     float price = std::strtof(buffer, nullptr);
 
     mvhline(printrow, 0, ' ', MAX_CHARACTERS);
     mvprintw(printrow, 0, "Rounded price was: %.2fe", price);
 
-    
     return price;
 }
 
-
+// Collect input into a text string
 std::string text_input_loop(int row){
 
         int printrow;
 
+        std::string type;
+
         switch(row){
             case GIFTTYPE:
                 printrow = GIFTTYPE;
-                mvprintw(printrow, 0, "Give the type of gift: ");
+                mvprintw(printrow, 0, "What is the gift? enter: ");
+                type = "as gift type.";
                 break;
             case GIFTMANU:
                 printrow = GIFTMANU;
                 mvprintw(printrow, 0, "Give the manufacturer: ");
+                type = "as manufacturer.";
                 break;
             case GIFTRECEIVER:
                 printrow = GIFTRECEIVER;
-                mvprintw(printrow, 0, "Give who is going to receive the gift: ");
+                mvprintw(printrow, 0, "Who is going to receive the gift: ");
+                type = "as receiver";
                 break;
             default:
                 break;
@@ -101,19 +109,21 @@ std::string text_input_loop(int row){
 
         int ch;
         int counter = 0;
-
+        curs_set(1); // show cursor
+            
         //- Loop for input text
         while (true) {
-
-            curs_set(1); // show cursor
             
             ch = getch();
+            if (ch == 27) {
+                curs_set(0);
+                return "\\";
+            }
 
             if (ch == '\n'){
                 curs_set(0); // disable cursor
                 break;
             }
-
 
             if (ch == KEY_BACKSPACE || ch == 127 || ch == 8) {
                 if (counter > 0) {
@@ -142,7 +152,7 @@ std::string text_input_loop(int row){
                     addch(ch);
                 }
             }
-            else if (counter < 40){
+            else if (counter < STRING_LENGTH){
                 if ((ch >= 'A') && (ch <= 'Z') || (ch >= 'a') && (ch <= 'z') || (ch == ' ')){
                     // For receiver name only letters are available
                     buffer[counter++] = ch;
@@ -153,6 +163,8 @@ std::string text_input_loop(int row){
 
         counter = 0; // reset counter
     
-    mvprintw(printrow + 1, 0, "You entered: %s", buffer);
+    mvhline(printrow, 0, ' ', MAX_CHARACTERS);
+    if (buffer[0] == '\0') mvprintw(printrow, 0, "You entered: <empty> %s", type.c_str());
+    else mvprintw(printrow, 0, "You entered: %s %s", buffer,type.c_str());
     return buffer;
 }

@@ -16,16 +16,33 @@
 #include <fstream>
 
 class listingGift {
+    
+    private:
+        std::string giftType = "";
+        std::string manufacturer = "";
+        std::string receiver = "";
+        
+
+        #ifndef DEBUG
+        int giftcounter = 0;
+        std::string list[LIST_ITEMS] = { "" };
+        float price[MAX_GIFTS] = {0};
+        #else        
+        int giftcounter = 3;
+        float price[MAX_GIFTS] = {1,2,3};
+        std::string list[LIST_ITEMS] = { DEBUG_STRING };
+        #endif
+    
     public:
         int add_to_list(std::string list[]) {
             for (int i = 0; i < LIST_ITEMS; i++) {
                 if (list[i].empty()) {
                     std::stringstream ss; // Gather string info in a single string stream
                     ss << std::fixed << std::setprecision(2);
-                    ss << "| Gift type: " << giftType                   
-                    << " | made by: " << manufacturer
-                    << " | receiver: " << receiver
-                    << " | price: " << price[giftcounter] << " |";
+                    ss << "| Gift: " << giftType                   
+                    << " | Made by: " << manufacturer
+                    << " | Receiver: " << receiver
+                    << " | Price: " << price[giftcounter] << " |";
 
                     list[i] = ss.str();
 
@@ -33,13 +50,18 @@ class listingGift {
                 }
             }
 
-            attron(A_REVERSE);
+            attron(A_REVERSE);  // error handling
             mvprintw(ERROR_MESSAGE_ROW, 0, " - ERROR: Empty list entry not found! ");
             attroff(A_REVERSE);
             return -1;
         }
 
         void addGift() {
+            if (giftcounter == MAX_GIFTS-1){
+                mvprintw(0,0,"MAX amount of gifts! %d at max, delete gifts to add new. Press any key to continue..",giftcounter);
+                getch();
+                return;
+            }
 
             char placehold[100];
 
@@ -49,20 +71,27 @@ class listingGift {
             }
 
             giftType = text_input_loop(GIFTTYPE); // assign gift type
+            if (giftType == "\\") return; // skip if ESC is pressed
             manufacturer = text_input_loop(GIFTMANU); // assign gift manu
+            if (manufacturer == "\\") return; // skip if ESC is pressed
             receiver = text_input_loop(GIFTRECEIVER); // assign gift receiver
+            if (receiver == "\\") return; // skip if ESC is pressed
 
             // different function for the price
             for(int i = 0; i < MAX_GIFTS; i++){ 
                 if (price[i] == 0) {
                     price[i] = input_price(GIFTPRICE); // Try to find price 0;
+                    if (price[i] < 0) {
+                        price[i] = 0; // clear current price
+                        return; // skip if ESC is pressed
+                    }
                     break;
                 }
             }
 
             mvhline(ERROR_MESSAGE_ROW, 0, ' ', MAX_CHARACTERS); // Clear error messages
 
-            giftcounter = add_to_list(list);
+            giftcounter = add_to_list(list); // add 
 
             if (giftcounter == -1) mvprintw(GIFTPRICE + 3, 0, "-- Failed to add new gift to the list -- Press any key to continue...");
 
@@ -90,14 +119,76 @@ class listingGift {
             return giftcounter;
         }
 
-    private:
-        std::string giftType = "";
-        std::string manufacturer = "";
-        std::string receiver = "";
-        float price[MAX_GIFTS] = {0};
+        void show_list(){
+            for(int i = 0; i < giftcounter; i++){
+                if (!(i % 2)) attron(A_REVERSE);
+                mvprintw(i + 1, 0,"#%d %s",i+1,list[i].c_str());
+                attroff(A_REVERSE);
+            }
 
-        int giftcounter = 0;
-        std::string list[LIST_ITEMS] = { "" };
+            getch();
+        }
+
+        void delete_gift() {
+
+            keypad(stdscr, TRUE);   // arrow keys
+
+            int highlight = 0;
+            int ch = 0;
+
+            int giftdel = 0; // press two characters to confirm delete
+
+            while (giftdel < 2) {
+                // print list with highlight
+                for (int i = 0; i < giftcounter; i++) {
+                    if (i == highlight) attron(RED);
+                    mvprintw(i + 1, 0, "#%d %s", i + 1, list[i].c_str());
+                    if (i == highlight) attroff(RED);
+                }
+
+                if (ch == 27) return; // ESC
+
+                if ((ch == '\n') && (giftdel == 0)) giftdel++;
+
+                if  (giftdel == 0){
+                    mvprintw(0, 0, "Mode: Delete gift (not yet active) number of gifts: %d - (ESC to abort)",giftcounter);
+                    ch = getch();
+                    if (ch == KEY_DOWN) {
+                        highlight++;
+                    } 
+                    else if (ch == KEY_UP) {
+                        highlight--;
+                    }
+                    // boundaries for moving highlight with 
+                    if (highlight < 0) highlight = 0;
+                    if (highlight >= giftcounter) highlight = giftcounter - 1;
+                }
+
+                if (giftdel == 1){
+                    mvhline(0,0,' ',90);
+                    attron(A_REVERSE);
+                    mvprintw(0, 0, "Delete gift #%d (not active), Confirm y/n ? (ESC to abort)",highlight+1);
+                    attroff(A_REVERSE);
+                    ch = getch();
+                    if (ch == 'y') break;
+                    else if (ch == 'n'){
+                        giftdel = 0;
+                    }
+                }
+
+                
+                
+            }
+
+
+
+            clear();
+            curs_set(1);
+            mvprintw(0, 0, "Deleted file successfully (not yet), press any key to continue.");
+            getch();
+            curs_set(0);
+        }
+
 };
 
 int main(void) {
@@ -108,8 +199,9 @@ int main(void) {
     // menu valikon tekstit
     const char *options[] = {
     "Add new gift",
-    "Show list               (not done yet)",
-    "Delete gift from list - (not done yet)",
+    "Show list",
+    "Delete gift from list   (Work in progress)",
+    "Save list               (not done yet)",
     "Quit"
     };
     #define N_OPTIONS (sizeof(options)/sizeof(options[0]))
@@ -150,11 +242,10 @@ int main(void) {
 
         
         attron(COLOR_PAIR(2));
-        mvprintw(15, 30, "Amount of gifts: #%d",Gifts.amount_of_gifts());
-        mvprintw(16, 30, "Total:%13.2f",Gifts.sum_of_prizes());
+        mvprintw(15, 29, "Number of gifts:  #%d",Gifts.amount_of_gifts());
+        mvprintw(16, 29, "Total:%13.2fe",Gifts.sum_of_prizes());
         attroff(COLOR_PAIR(2));
         
-
         ch = getch();
         if (ch == KEY_UP) {
             highlight = (highlight - 1 + N_OPTIONS) % N_OPTIONS;
@@ -171,14 +262,25 @@ int main(void) {
             break; // quit the program
             }
 
-            mvprintw(0, 0, "Mode: %s", options[highlight]);
-            mvprintw(2, 0, "Press any key to continue...");
-            refresh();
-            getch();
-           
+            // Display which mode is present
             if (highlight == ADD) {
+                mvprintw(0, 0, "Mode: %s (ESC to abort)", options[highlight]);
                 Gifts.addGift();
             }
+            else if (highlight == SHOW) {
+                mvprintw(0, 0, "Mode: %s Gifts: #%d Total: %.2fe - Press any key to continue.", options[highlight],Gifts.amount_of_gifts(),Gifts.sum_of_prizes());
+                Gifts.show_list();
+            }
+            else if (highlight == DELETE) {
+                Gifts.delete_gift();
+            }
+            else {
+                mvprintw(0, 0, "Mode: %s ", options[highlight]);
+                mvprintw(2, 0, "Press any key to continue...");
+                getch();
+            }
+            refresh();
+            
 
         } else if (ch == 'Q') { 
             quit = 0; // quit the program with shift Q
