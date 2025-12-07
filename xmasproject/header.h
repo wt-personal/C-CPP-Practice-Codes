@@ -5,9 +5,9 @@
 
 #define DEBUG
 
-#define DEBUG_STRING    "Gift: test1 | Made by: 67 | Receiver: u | Price: 1.00 |", \
-                        "Gift: test2 | Made by: jk | Receiver: u | Price: 2.00 |", \
-                        "Gift: test3 | Made by: wt | Receiver: u | Price: 3.00 |"
+#define DEBUG_STRING    "| Gift: test1 | Made by: 67 | Receiver: u | Price: 1.00 |", \
+                        "| Gift: test2 | Made by: jk | Receiver: u | Price: 2.00 |", \
+                        "| Gift: test3 | Made by: wt | Receiver: u | Price: 3.00 |"
 
 #define RED COLOR_PAIR(2)
 

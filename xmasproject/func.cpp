@@ -59,7 +59,7 @@ float input_price(int row){
             continue;
         }
 
-        if (counter < STRING_LENGTH) {
+        if (counter < 8) {
             if ((ch >= '0' && ch <= '9') || ch == 'e' || (ch == '.' && !dot_exists)) {
                 if (ch == '.') dot_exists = true;
                 buffer[counter++] = ch;
