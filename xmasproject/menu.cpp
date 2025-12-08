@@ -183,9 +183,9 @@ class listingGift {
             delete_and_sort(highlight); //move the list items
 
             // end message for 
-            clear();
+            erase(); 
             if (giftcounter == 0) mvprintw(giftcounter+1, 2, "%d entries left,",giftcounter);
-            mvprintw(giftcounter+2, 2, "Deleted gift successfully, press any key to continue.");
+            else mvprintw(giftcounter+2, 4, "Deleted gift successfully, press any key to continue.");
             curs_set(0);
             show_list();
             
@@ -203,7 +203,7 @@ class listingGift {
 
         void save_list() {
             if (giftcounter == 0){
-                mvprintw(2,4,"No gifts in the list.\n\n    Make new ones in the Add new gift -mode.");
+                mvprintw(2,2,"No gifts in the list.\n\n    Make new ones in the Add new gift -mode.");
                 getch();
                 return;
             }
@@ -282,7 +282,7 @@ int main(void) {
     char quit = 1; // use char type to determine quitting
 
     while (quit) {
-        clear();
+        erase();
         attron(COLOR_PAIR(2));
         mvprintw(0, 0, TITLE); // banner
         
