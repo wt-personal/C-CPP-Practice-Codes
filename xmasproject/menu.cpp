@@ -193,7 +193,8 @@ class listingGift {
         }
 
         void delete_and_sort(int highlight){
-            for(int i = highlight; i < giftcounter-1; i++){
+
+            for(int i = highlight; i < giftcounter; i++){ // Fixed possible out of bounds index
                 list[i] = list[i+1];
                 price[i] = price[i+1];
             }

@@ -19,7 +19,7 @@
 
 #define ERROR_MESSAGE_ROW 0
 
-#define LIST_ITEMS 100
+#define LIST_ITEMS (MAX_GIFTS+1)
 
 #define STRING_LENGTH 20
 
