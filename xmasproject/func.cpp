@@ -145,7 +145,7 @@ std::string text_input_loop(int row){
             // Add character
 
             if ((counter < STRING_LENGTH) && (row != GIFTRECEIVER)) {
-                if ((ch >= 'A') && (ch <= 'Z') || (ch >= 'a') && (ch <= 'z') || (ch == ' ') ||
+                if (((ch >= 'A') && (ch <= 'Z')) || ((ch >= 'a') && (ch <= 'z')) || (ch == ' ') ||
                     ((ch >= '!') && (ch <= '@'))) { // Special characters + numbers
                     
                     buffer[counter++] = ch;
@@ -153,7 +153,7 @@ std::string text_input_loop(int row){
                 }
             }
             else if (counter < STRING_LENGTH){
-                if ((ch >= 'A') && (ch <= 'Z') || (ch >= 'a') && (ch <= 'z') || (ch == ' ')){
+                if (((ch >= 'A') && (ch <= 'Z'))  || ((ch >= 'a') && (ch <= 'z')) || (ch == ' ')){
                     // For receiver name only letters are available
                     buffer[counter++] = ch;
                     addch(ch);

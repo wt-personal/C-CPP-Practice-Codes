@@ -65,8 +65,6 @@ class listingGift {
                 return; // return if there is too many gifts
             }
 
-            char placehold[100];
-
             move(2, 0);
             for(int j = 0; j < 30; j++){    // Clear the row for pressing any buttons
                 addch(' ');
@@ -265,7 +263,7 @@ int main(void) {
     };
     #define N_OPTIONS (sizeof(options)/sizeof(options[0]))
 
-    int ch, i;
+    int ch;
     int highlight = 0;
 
     set_escdelay(25); 
@@ -291,7 +289,7 @@ int main(void) {
         attroff(COLOR_PAIR(2));
         mvprintw(7, 0, "      --- Gift Calculator - by e2403299 ---      \n");
         
-        for (i = 0; i < N_OPTIONS; i++) {
+        for (int i = 0; i < (int)N_OPTIONS; i++) {
             if (i == highlight) {
                 attron(COLOR_PAIR(1));
                 mvprintw(10 + i, 4, "%s", options[i]);
