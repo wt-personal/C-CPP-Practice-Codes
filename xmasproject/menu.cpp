@@ -22,6 +22,7 @@ class listingGift {
         std::string manufacturer = "";
         std::string receiver = "";
         
+        // This could have been a constructor.
         #ifndef DEBUG
         int giftcounter = 0;
         std::string list[LIST_ITEMS] = { "" };
@@ -192,7 +193,7 @@ class listingGift {
         }
 
         void delete_and_sort(int highlight){
-            for(int i = highlight; i < giftcounter; i++){
+            for(int i = highlight; i < giftcounter-1; i++){
                 list[i] = list[i+1];
                 price[i] = price[i+1];
             }
@@ -222,7 +223,7 @@ class listingGift {
             MyFile << "Christmas gift list:\n-----------------------\n";
 
             for (int i = 0; i < giftcounter; i++) {
-                MyFile << '#' << i << " " << list[i] << "\n";
+                MyFile << '#' << i+1 << " " << list[i] << "\n";
             }
             MyFile << "\n" << "Number of gifts: " << amount_of_gifts();
 
@@ -275,7 +276,7 @@ int main(void) {
     keypad(stdscr, TRUE);
     curs_set(0);
 
-    init_pair(1, COLOR_WHITE, COLOR_BLUE);
+    init_pair(1, COLOR_BLACK, COLOR_CYAN);
     init_pair(2, COLOR_WHITE, COLOR_RED);
     // bkgd(COLOR_PAIR(1));
 
@@ -354,4 +355,3 @@ int main(void) {
     endwin();
     return 0;
 }
-
