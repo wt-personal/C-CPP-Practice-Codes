@@ -32,7 +32,8 @@ float input_price(int row){
                 for(int i = 0; i < counter; i++){
                     mvdelch(printrow, 28);
                 }
-                buffer[256] = {0}; // clear buffer
+                for (int i = 0; i < 256; i++) buffer[i] = '\0';
+    
                 dot_exists = false;
                 counter = 0;
                 attron(A_REVERSE);

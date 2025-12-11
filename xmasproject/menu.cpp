@@ -22,7 +22,6 @@ class listingGift {
         std::string manufacturer = "";
         std::string receiver = "";
         
-        // This could have been a constructor.
         #ifndef DEBUG
         int giftcounter = 0;
         std::string list[LIST_ITEMS] = { "" };
@@ -70,12 +69,13 @@ class listingGift {
                 addch(' ');
             }
 
+            // return if text_input_loop 
             giftType = text_input_loop(GIFTTYPE); // assign gift type
-            if (giftType == "\\") return; // skip if ESC is pressed
+            if (giftType == "\\") return; 
             manufacturer = text_input_loop(GIFTMANU); // assign gift manu
-            if (manufacturer == "\\") return; // skip if ESC is pressed
+            if (manufacturer == "\\") return; 
             receiver = text_input_loop(GIFTRECEIVER); // assign gift receiver
-            if (receiver == "\\") return; // skip if ESC is pressed
+            if (receiver == "\\") return; 
 
             // different function for the price
             for(int i = 0; i < MAX_GIFTS; i++){ 
